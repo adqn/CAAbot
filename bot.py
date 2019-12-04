@@ -48,9 +48,10 @@ class Bot:
     
     if resp.find('PING') != -1:
       self.irc.send(bytes("PONG :pingis\n", "UTF-8"))
+
+    # initial PONG <number> response required by irc.rizon.net
     if resp.find('/QUOTE') != -1:
       index = resp.find('PONG')
-      #time.sleep(2)
       self.irc.send(bytes(resp[index:] + "\n", "UTF-8"))
 
       # put this in the initilization
@@ -62,38 +63,35 @@ class Bot:
       entity = prefix.split(' ')[0]
       message = resp.split("PRIVMSG", 1)[1].split(":")[1]
       if message[0] == ".":
-        print("got command? " + message)
+        #print("got command? " + message)
         self.get_command(entity, message.strip("\n\r"))
 
     return resp
   
-
-  def get_command(self, entity, message):     
-    if message.find(".q add") == 0:
-      message = message.split(".q add ")[1]
-      username = message.split(' ', 1)[0]
-      quote = message.split(' ', 1)[1]
-
-      self.add_quote(username, quote)
-      self.send_msg(entity, "Quote added.\n")
-    
-    if message == ".q":
-      random_quote = self.random_quote()
-      self.send_msg(entity, random_quote + "\n")
-
-    if message.find(".admin quit") == 0:
-      self.running = False
-
-    else:
-      if re.findall(".q \w*", message):
-        username = message.split(".q ")[1]
-        random_quote = self.random_quote(username)
+  def get_command(self, entity, message):
+    # user-quote functions
+    if message.find(".q") == 0:
+      if message == ".q":
+        random_quote = self.random_quote()
         self.send_msg(entity, random_quote + "\n")
 
-    """
-    else:
-      command = commands.get(message.split(' ')[0], "Invalid command.")
-    """
+      elif message.find(".q add") == 0:
+        message = message.split(".q add ")[1]
+        username = message.split(' ', 1)[0]
+        quote = message.split(' ', 1)[1]
+
+        self.add_quote(username, quote)
+        self.send_msg(entity, "Quote added.\n")
+
+      else:
+        if re.findall(".q \w*", message):
+          username = message.split(".q ")[1]
+          random_quote = self.random_quote(username)
+          self.send_msg(entity, random_quote + "\n")
+
+    # add an admin username for this lol
+    if message == ".admin quit":
+      self.running = False
 
   def add_quote(self, user, message):
     quotefile = open("db/user_quotes.txt", "a+")
@@ -110,7 +108,7 @@ class Bot:
       userquotes = []
 
       for quote in quotearr:
-        if quote.find("<" + username + ">") != -1:
+        if quote.find("<" + username + ">") == 0:
           userquotes.append(quote)
 
       userquotelen = len(userquotes) - 1
@@ -134,8 +132,6 @@ class Bot:
     True
 
 
-
-
 def get_config(configfile):
   config = open(configfile).readlines()
 
@@ -146,6 +142,7 @@ def get_config(configfile):
 
   return {'server': server, 'port': port, 'botnick': botnick, 'channel': channel}
 
+
 if __name__ == "__main__":
   irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   params = get_config("config.txt")
@@ -155,7 +152,7 @@ if __name__ == "__main__":
   bot.channels.append(params['channel'])
   bot.connect(params['server'], params['port'], params['botnick'])
 
-  print(bot.get_resp())
+  #bot.get_resp()
 
   while bot.running:
     print(bot.get_resp())
