@@ -38,6 +38,17 @@ while True:
                 else:
                     pass
 
+            if com == "/next":
+                if shell.curr_chan_id == len(shell.env['channels']):
+                    shell.curr_chan_id = 1
+                else:
+                    shell.curr_chan_id += 1
+                shell.curr_chan = shell.env['channels'][shell.curr_chan_id - 1]         
+
+        if shell.curr_com != None:
+            with open(commandfile, "w") as c:  
+                c.write(shell.curr_com)
+            shell.curr_com = shell.curr_state
 
     except KeyboardInterrupt:
         print("\nCTRL+C was used; shell interrupted.")
