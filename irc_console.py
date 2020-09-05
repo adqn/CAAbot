@@ -45,6 +45,10 @@ while True:
                     shell.curr_chan_id += 1
                 shell.curr_chan = shell.env['channels'][shell.curr_chan_id - 1]         
 
+            if com == "/all":
+                shell.curr_com = "\n".join([" ".join(shell.env['channels']), msg])
+            
+
         if shell.curr_com != None:
             with open(commandfile, "w") as c:  
                 c.write(shell.curr_com)
