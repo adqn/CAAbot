@@ -1,4 +1,3 @@
 server: server port
 channel: #channelgoeshere
 nick: My_bot
-yes
