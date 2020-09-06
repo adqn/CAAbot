@@ -18,6 +18,18 @@ def check_input(inp):
     if inp.find("$") == 0:
         print("python:", input[1:])
 
+def check_config(f):
+    try:
+        with open(f) as conf:
+            config = conf.readlines()
+            channels = config[0].replace("\n", "").split(' ')[1:]
+
+            return {
+                'channels': channels,
+            }
+    except:
+        pass
+
 
 while True:
     #configfile = 
