@@ -14,7 +14,9 @@ class IRCShell:
         self.curr_chan = None
         self.curr_chan_id = 1
 
-
+def check_input(inp):
+    if inp.find("$") == 0:
+        print("python:", input[1:])
 
 
 while True:
