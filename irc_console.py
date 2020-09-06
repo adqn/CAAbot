@@ -29,7 +29,17 @@ def check_config(f):
             }
     except:
         pass
-
+    
+def init_env(shell, f):
+    env = check_config(f)
+    
+    #print("Initializing...")
+    shell.env['channels'] = env['channels']
+    try:
+        shell.host_socket.connect(('localhost', 8181))
+    except Exception as e:
+        print(e)
+        print("Could not connect to a bot. Type \"host connect\" to try again.")
 
 while True:
     #configfile = 
