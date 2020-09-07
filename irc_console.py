@@ -1,3 +1,7 @@
+import math
+import json
+import socket
+
 shellname = "CAAbot"
 
 class IRCShell:
