@@ -43,6 +43,7 @@ def check_input(inp):
     if inp.find("$") == 0:
         print("python:", input[1:])
 
+# Change to sqlite db checking or something
 def check_config(f):
     try:
         with open(f) as conf:
@@ -58,6 +59,7 @@ def check_config(f):
 def init_env(shell, f):
     try:
         shell.host_socket.connect(('localhost', 8181))
+        shell.on_connect()
     except Exception as e:
         print(e)
         print("Could not connect to a bot. Type \"host connect\" to try again.")
