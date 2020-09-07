@@ -1,4 +1,4 @@
-# misc-irc-bot
+# CAAbot
 
 Only has user quote commands for now. 
 
