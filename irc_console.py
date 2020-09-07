@@ -31,10 +31,6 @@ def check_config(f):
         pass
     
 def init_env(shell, f):
-    env = check_config(f)
-    
-    #print("Initializing...")
-    shell.env['channels'] = env['channels']
     try:
         shell.host_socket.connect(('localhost', 8181))
     except Exception as e:
