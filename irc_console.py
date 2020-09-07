@@ -1,18 +1,39 @@
-commandfile = "command_temp.txt"
-configfile = "env.txt"
-shellname = "MyBot"
+shellname = "CAAbot"
 
 class IRCShell:
-    def __init__(self):
+    def __init__(self, host_socket):
+        self.host_socket = host_socket
+
         self.env = {
             'channels': "",
             'current_channel': "",
+            'scripts': [],
         }
         
         self.action = "default"
         self.curr_com = None
-        self.curr_chan = None
+        self.curr_chan = ""
         self.curr_chan_id = 1
+
+    def on_connect(self):
+        try:
+            data = self.host_socket.recv(2048).decode("UTF-8")
+            host_state = json.loads(data)
+        except:
+            print("Not connected to a host")
+        finally:
+            if data:
+                self.env['channels'] = host_state['channels']
+                self.env['scripts'] = host_state['scripts']
+
+def make_json(query_type=None, action=None, entity=None, target=None, message=None):
+    return {
+        'query type': query_type,
+        'action': action,
+        'entity': entity,
+        'target': target,
+        'message': message,
+    }
 
 def check_input(inp):
     if inp.find("$") == 0:
