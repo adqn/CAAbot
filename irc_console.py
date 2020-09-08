@@ -93,18 +93,14 @@ if __name__ == '__main__':
                                 shell.curr_chan_id += 1
                             shell.curr_chan = shell.env['channels'][shell.curr_chan_id - 1]  
 
+                    if com == "/chanoff":
+                        shell.curr_chan = ""
+
                     if com == "/c":
                         if shell.curr_chan != None:
                                 shell.curr_com = "\n".join([shell.curr_chan, msg])
                         else:
                             pass
-
-                    if com == "/next":
-                        if shell.curr_chan_id == len(shell.env['channels']):
-                            shell.curr_chan_id = 1
-                        else:
-                            shell.curr_chan_id += 1
-                        shell.curr_chan = shell.env['channels'][shell.curr_chan_id - 1]         
 
                     if com == "/all":
                         shell.curr_com = "\n".join([" ".join(shell.env['channels']), msg])
