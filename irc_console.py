@@ -79,12 +79,20 @@ if __name__ == '__main__':
                 indicator = ""
 
             inp = str(input("%s%s%s> " % (shellname, indicator, shell.curr_chan)))
-            
+
             if len(inp) > 0:
                 if inp[0] == "/":   
                     com = inp.split(" ")[0]
                     msg = " ".join(inp.split(" ")[1:])
                     
+                    if com == "/next":
+                        if any(shell.env['channels']):
+                            if shell.curr_chan_id == len(shell.env['channels']):
+                                shell.curr_chan_id = 1
+                            else:
+                                shell.curr_chan_id += 1
+                            shell.curr_chan = shell.env['channels'][shell.curr_chan_id - 1]  
+
                     if com == "/c":
                         if shell.curr_chan != None:
                                 shell.curr_com = "\n".join([shell.curr_chan, msg])
