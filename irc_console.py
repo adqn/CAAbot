@@ -95,12 +95,15 @@ if __name__ == '__main__':
 
                     if com == "/chanoff":
                         shell.curr_chan = ""
-
+                        
                     if com == "/c":
-                        if shell.curr_chan != None:
-                                shell.curr_com = "\n".join([shell.curr_chan, msg])
+                        if shell.curr_chan != "":
+                            shell.curr_com = make_json(query_type='server_action',\
+                            action='PRIVMSG', \
+                            entity=[shell.curr_chan],\
+                            message=msg)
                         else:
-                            pass
+                            print("Not on a channel")
 
                     if com == "/all":
                         shell.curr_com = "\n".join([" ".join(shell.env['channels']), msg])
