@@ -56,6 +56,9 @@ def init_env(shell, f):
         print(e)
         print("Could not connect to a bot. Type \"host connect\" to try again.")
 
+padding = 5
+entries_per_line = 5
+
 if __name__ == '__main__':
     host = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     shell = IRCShell(host)
@@ -98,7 +101,10 @@ if __name__ == '__main__':
                             print("Not on a channel")
 
                     if com == "/all":
-                        shell.curr_com = "\n".join([" ".join(shell.env['channels']), msg])
+                        shell.curr_com = make_json(query_type='server_action',\
+                            action='PRIVMSG', \
+                            entity=shell.env['channels'],\
+                            message=msg)
                     
 
                 if shell.curr_com != None:
