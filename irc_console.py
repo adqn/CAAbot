@@ -105,7 +105,11 @@ if __name__ == '__main__':
                             action='PRIVMSG', \
                             entity=shell.env['channels'],\
                             message=msg)
-                    
+                            
+                    if com == '/mode':
+                        shell.curr_com = make_json(query_type='server_action', \
+                            action='mode', \
+                            message=inp.replace("/mode", "MODE"))
 
                 if shell.curr_com != None:
                     with open(commandfile, "w") as c:  
