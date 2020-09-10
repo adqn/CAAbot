@@ -2,7 +2,8 @@ import math
 import json
 import socket
 
-shellname = "CAAbot"
+import config
+shellname = config.shellname
 
 class IRCShell:
     def __init__(self, host_socket):
@@ -19,16 +20,19 @@ class IRCShell:
         self.curr_chan = ""
         self.curr_chan_id = 1
 
-    def on_connect(self):
+    def on_host_state_update(self):
         try:
             data = self.host_socket.recv(2048).decode("UTF-8")
             host_state = json.loads(data)
         except:
             print("Not connected to a host")
-        finally:
+        else:
             if data:
                 self.env['channels'] = host_state['channels']
                 self.env['scripts'] = host_state['scripts']
+                self.env['script_vars'] = host_state['script_vars']
+                
+                return host_state['message']
 
 def make_json(query_type=None, action=None, entity=None, target=None, message=None):
     return {
@@ -37,24 +41,12 @@ def make_json(query_type=None, action=None, entity=None, target=None, message=No
         'entity': entity,
         'target': target,
         'message': message,
+        'var_value': var_value
     }
 
 def check_input(inp):
     if inp.find("$") == 0:
         print("python:", input[1:])
-
-# Change to sqlite db checking or something
-def check_config(f):
-    try:
-        with open(f) as conf:
-            config = conf.readlines()
-            channels = config[0].replace("\n", "").split(' ')[1:]
-
-            return {
-                'channels': channels,
-            }
-    except:
-        pass
     
 def init_env(shell, f):
     try:
