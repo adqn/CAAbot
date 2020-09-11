@@ -120,6 +120,15 @@ if __name__ == '__main__':
                         entity=[inp.split(" ")[1]],\
                         message=" ".join(inp.split(" ")[2:]))                        
 
+                    if com == "/join":
+                        if msg != "":
+                            for chan in inp.split(" ")[1:]:
+                                if chan not in shell.env['channels']:
+                                    shell.env['channels'].append(chan)
+                                    shell.curr_com = {'query type': 'server_action',
+                                                    'action': com,
+                                                    'target': inp.split(" ")[1:]}                        
+
                 if shell.curr_com != None:
                     with open(commandfile, "w") as c:  
                         c.write(shell.curr_com)
