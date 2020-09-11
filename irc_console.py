@@ -114,6 +114,12 @@ if __name__ == '__main__':
                     if com == "/disconnect" or com == "/connect":
                         shell.curr_com = make_json(query_type='bot_action', action=inp[1:])
 
+                    if com == "/msg":
+                        shell.curr_com = make_json(query_type='server_action',\
+                        action='PRIVMSG', \
+                        entity=[inp.split(" ")[1]],\
+                        message=" ".join(inp.split(" ")[2:]))                        
+
                 if shell.curr_com != None:
                     with open(commandfile, "w") as c:  
                         c.write(shell.curr_com)
