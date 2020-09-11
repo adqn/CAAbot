@@ -3,22 +3,21 @@
 ######################## 
 
 servers = {
-    'irc.rizon.net': 6667,
+    'server.ip.here': 6667,
 }
 
 channels = [
-    '#agagag',
+    '#yourchannel',
 ]
 
 # password is None if not applicable #
 
-botnick = 'sukub'
+botnick = 'CAAbot'
 password = None
 
 scripts = [
     'logging2',
     'filtering',
-    'get_qts',
 ]
 
 ##########################
@@ -26,5 +25,5 @@ scripts = [
 ##########################
 
 shellname = 'CAAbot'
-bot_address = 'bot.ip.here'
+bot_address = 'bot.address.here'
 bot_port = 8181
