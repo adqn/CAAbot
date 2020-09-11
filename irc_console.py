@@ -127,7 +127,17 @@ if __name__ == '__main__':
                                     shell.env['channels'].append(chan)
                                     shell.curr_com = {'query type': 'server_action',
                                                     'action': com,
-                                                    'target': inp.split(" ")[1:]}                        
+                                                    'target': inp.split(" ")[1:]}                   
+
+                    if com == "/part":
+                        if msg != "":
+                            for chan in inp.split(" ")[1:]:
+                                if chan in shell.env['channels']:
+                                    shell.env['channels'].remove(chan)
+
+                            shell.curr_com = {'query type': 'server_action',
+                                            'action': com,
+                                            'target': inp.split(" ")[1:]}                                                         
 
                 if shell.curr_com != None:
                     with open(commandfile, "w") as c:  
