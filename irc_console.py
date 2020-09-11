@@ -111,6 +111,9 @@ if __name__ == '__main__':
                             action='mode', \
                             message=inp.replace("/mode", "MODE"))
 
+                    if com == "/disconnect" or com == "/connect":
+                        shell.curr_com = make_json(query_type='bot_action', action=inp[1:])
+
                 if shell.curr_com != None:
                     with open(commandfile, "w") as c:  
                         c.write(shell.curr_com)
