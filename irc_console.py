@@ -155,6 +155,12 @@ if __name__ == '__main__':
                             print("Current channels:\n", " ".join(shell.env['channels']))
                         else:
                             print("Not on any channels")                        
+                            
+                    if com == "load":
+                        if any(msg):
+                            shell.curr_com = make_json(query_type="bot_action", \
+                                action='load script', \
+                                target=msg[0])
 
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
