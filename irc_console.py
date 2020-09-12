@@ -140,9 +140,13 @@ if __name__ == '__main__':
                                             'target': inp.split(" ")[1:]}                                                         
 
                 if shell.curr_com != None:
-                    with open(commandfile, "w") as c:  
-                        c.write(shell.curr_com)
-                    shell.curr_com = shell.curr_state
+                    curr_com = json.dumps(shell.curr_com).encode()
+
+                    try:
+                        shell.host_socket.sendall(curr_com)
+                    except Exception as e:
+                        print(e)
+                        print("Could not send command to host")
 
             except KeyboardInterrupt:
                 print("\nCTRL+C was used; shell interrupted.")
