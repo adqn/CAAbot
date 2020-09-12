@@ -139,6 +139,13 @@ if __name__ == '__main__':
                                             'action': com,
                                             'target': inp.split(" ")[1:]}                                                         
 
+                    if com == "/users":
+                        shell.curr_com = {
+                            'query type': 'server_action',
+                            'action': com,
+                            'message': inp.replace("/users", "NAMES")
+                        }
+
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
 
