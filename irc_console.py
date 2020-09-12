@@ -146,6 +146,16 @@ if __name__ == '__main__':
                             'message': inp.replace("/users", "NAMES")
                         }
 
+                if inp[0] != "/":
+                    com = inp.split(" ")[0]
+                    msg = inp.split(" ")[1:]
+
+                    if com == "chans":
+                        if len(shell.env['channels']) > 0:
+                            print("Current channels:\n", " ".join(shell.env['channels']))
+                        else:
+                            print("Not on any channels")                        
+
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
 
