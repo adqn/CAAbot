@@ -180,6 +180,11 @@ if __name__ == '__main__':
                         module_com = inp.split(".")
                         module = module_com[1]                            
 
+                       if len(module_com) == 2:
+                            if module in shell.env['scripts']:                            
+                                for script_var in shell.env['script_vars'][module]:
+                                    print(" " * padding + "%s: %s" % (script_var, shell.env['script_vars'][module][script_var]))
+
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
 
