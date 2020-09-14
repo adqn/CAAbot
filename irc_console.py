@@ -162,6 +162,14 @@ if __name__ == '__main__':
                                 action='load script', \
                                 target=msg[0])
 
+                    if com == "reload":
+                        if any(msg):
+                            shell.curr_com = make_json(query_type="bot_action", \
+                                action='reload script', \
+                                target=msg[0])                                
+
+
+
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
 
