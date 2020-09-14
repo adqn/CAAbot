@@ -185,6 +185,21 @@ if __name__ == '__main__':
                                 for script_var in shell.env['script_vars'][module]:
                                     print(" " * padding + "%s: %s" % (script_var, shell.env['script_vars'][module][script_var]))
 
+                        if len(module_com) == 3:
+                            module_var = module_com[2].split(" = ")[0]
+
+                            if inp.find("=") != -1:
+                                var_value = inp.split(" = ")[1]
+                                shell.curr_com = make_json(
+                                    query_type='script_action',
+                                    action='set_var',
+                                    entity=module,
+                                    target=module_var,
+                                    var_value=var_value,
+                                )
+                                
+                                host_resp = None
+
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
 
