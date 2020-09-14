@@ -176,6 +176,10 @@ if __name__ == '__main__':
                             output = ", ".join(scripts[i*entries_per_line:(i+1)*(entries_per_line)])
                             print(" " * padding + output)
 
+                    if len(inp.split(".")) > 1:
+                        module_com = inp.split(".")
+                        module = module_com[1]                            
+
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
 
