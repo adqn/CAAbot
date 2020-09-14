@@ -168,7 +168,13 @@ if __name__ == '__main__':
                                 action='reload script', \
                                 target=msg[0])                                
 
-
+                    if com == "scripts":
+                        scripts = shell.env['scripts']
+                        entries_most = math.ceil(len(shell.env['scripts'])/entries_per_line)
+                        print("Currently running scripts:")
+                        for i in range(entries_most):
+                            output = ", ".join(scripts[i*entries_per_line:(i+1)*(entries_per_line)])
+                            print(" " * padding + output)
 
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
