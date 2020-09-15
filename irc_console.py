@@ -199,6 +199,18 @@ if __name__ == '__main__':
                                 )
                                 
                                 host_resp = None
+                                try:
+                                    curr_com = json.dumps(shell.curr_com).encode()
+                                    shell.host_socket.sendall(curr_com)
+                                    host_resp = shell.on_host_state_update()
+
+                                except Exception as e:
+                                    print(e)        
+                                
+                                if host_resp:
+                                    print(host_resp)
+
+                                shell.curr_com = None                                
 
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
