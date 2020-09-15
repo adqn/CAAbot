@@ -7,6 +7,14 @@ fn main() {
     hello(gil.python()).unwrap();
 }
 
+pub fn get_py_path(py: Python) -> PyResult<()> {
+     let locals = PyDict::new(py);
+    locals.set_item(py, "sys", py.import("sys")?)?; 
+    let path: String = py.eval("str(sys.path)", None, Some(&locals))?.extract(py)?;
+    println!("Python path: {}", path);
+    Ok(())
+}
+
 pub fn hello(py: Python) -> PyResult<()> {
     let sys = py.import("sys")?;
     let version: String = sys.get(py, "version")?.extract(py)?;
