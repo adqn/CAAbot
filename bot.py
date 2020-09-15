@@ -38,14 +38,19 @@ class Bot:
         self.log_file = False
         self.other_stuff = True
 
-    def connect(self, server, port, botnick):
+    def connect(self, server, port):
+        print("username:", config.botnick)
         print("Connecting to " + server + " on port " + str(port))
 
-        self.irc.connect((server, int(port)))
-        self.irc.send(bytes("USER test test test :test\n", "UTF-8"))
-        self.irc.send(bytes("NICK " + botnick + "\n", "UTF-8"))
+        try:
+            self.irc.connect((server,  port))
+            self.irc.send(bytes("USER " + "owo test test :test\n", "UTF-8"))
+            self.irc.send(bytes("NICK " + config.botnick + "\n", "UTF-8"))
+        except Exception as e:
+            print("Could not connect to server.")
 
         print("Connection successful.")
+        self.running = True
         time.sleep(3)
 
     def send_msg(self, entity, message):
