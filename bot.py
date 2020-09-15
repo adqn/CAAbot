@@ -17,13 +17,15 @@ import config
 threads = {}
 
 class Bot:
-    def __init__(self, irc, config_params):
+    def __init__(self, irc):
         self.irc = irc
+        self.dbp = None
+
         self.running = False
         self.channels = []
-        self.config = config_params
         self.current_scripts = {}
 
+        self.script_state_update = True        
         self.script_msg_switches = {}
 
         self.new_msg = False
