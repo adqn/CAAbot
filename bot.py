@@ -44,7 +44,7 @@ class Bot:
 
         try:
             self.irc.connect((server,  port))
-            self.irc.send(bytes("USER " + "owo test test :test\n", "UTF-8"))
+            self.irc.send(bytes("USER " + "test test test :test\n", "UTF-8"))
             self.irc.send(bytes("NICK " + config.botnick + "\n", "UTF-8"))
         except Exception as e:
             print("Could not connect to server.")
@@ -53,9 +53,11 @@ class Bot:
         self.running = True
         time.sleep(3)
 
-    def send_msg(self, entity, message):
-        msg = "PRIVMSG " + entity + " :" + message + "\n"
-        self.irc.send(bytes(msg, "UTF-8"))
+    def send_msg(self, entity=None, message=None):
+        if entity:
+            message = "PRIVMSG " + entity + " :" + message + "\n"
+
+        self.irc.send(bytes(message + "\n", "UTF-8"))
 
     def join_channel(self, channel):
         self.irc.send(bytes("JOIN " + channel + "\n", "UTF-8"))
