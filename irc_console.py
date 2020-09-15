@@ -210,7 +210,13 @@ if __name__ == '__main__':
                                 if host_resp:
                                     print(host_resp)
 
-                                shell.curr_com = None                                
+                                shell.curr_com = None                        
+
+                            else:
+                                if module_var:
+                                    if module_var in shell.env['script_vars'][module].keys():
+                                        var_value = shell.env['script_vars'][module][module_var]
+                                        print(" " * padding + "%s = %s" % (module_var, var_value))                                        
 
                 if shell.curr_com != None:
                     curr_com = json.dumps(shell.curr_com).encode()
