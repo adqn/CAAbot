@@ -1,0 +1,8 @@
+[package]
+name = "CAAbot-rust"
+version = "0.1.0"
+authors = ["adqn"]
+edition = "2018"
+
+[dependencies]
+cpython = "0.5"
