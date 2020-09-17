@@ -54,7 +54,7 @@ class Bot:
         time.sleep(1)
 
     # all commands/server requests parsed and handled from here
-   def get_resp(self):
+    def get_resp(self):
         resp = self.irc.recv(2048).decode("UTF-8")
 
         if resp.find('PING') != -1:
@@ -87,68 +87,12 @@ class Bot:
         
         return resp
 
-    def get_command(self, entity, message):
-        # user-quote functions
-        if message.find(".q") == 0:
-            if message == ".q":
-                random_quote = self.random_quote()
-                self.send_msg(entity, random_quote + "\n")
-
-            elif message.find(".q add") == 0:
-                message = message.split(".q add ")[1]
-                username = message.split(' ', 1)[0]
-                quote = message.split(' ', 1)[1]
-
-                self.add_quote(username, quote)
-                self.send_msg(entity, "Quote added.\n")
-
-            else:
-                if re.findall(".q \w*", message):
-                    username = message.split(".q ")[1]
-                    random_quote = self.random_quote(username)
-                    self.send_msg(entity, random_quote + "\n")
-
-        # add an admin username for this lol
-        if message == ".admin quit":
-            self.running = False
-
-    def add_quote(self, user, message):
-        quotefile = open("db/user_quotes.txt", "a+")
-        quote = "<" + user + "> " + message + "\n"
-        quotefile.write(quote)
-        quotefile.close()
-
-    def random_quote(self, username=None):
-        quotefile = open("db/user_quotes.txt")
-        quotearr = quotefile.readlines()
-        quotefile.close()
-
-        if username:  # get random quote from user
-            userquotes = []
-
-            for quote in quotearr:
-                if quote.find("<" + username + ">") == 0:
-                    userquotes.append(quote)
-
-            userquotelen = len(userquotes) - 1
-
-            if userquotelen > 0:
-                random_quote = quotearr[np.random.randint(0, userquotelen)]
-            else:
-                random_quote = userquotes[userquotelen]
-
-        else:  # get random quote
-            quotelen = len(quotearr) - 1
-
-            random_quote = quotearr[np.random.randint(0, quotelen)]
-
-            while random_quote == '\n':
-                random_quote = quotearr[np.random.randint(0, quotelen)]
-
-        return random_quote
-
-    def random_qdb(self):
-        True
+    # get calling module's filename
+    def info(self):
+        inspect = __import__('inspect')
+        frm = inspect.stack()[1]
+        mod = inspect.getmodule(frm[0])
+        return str(mod).split(r'\\')[-1].split('.')[0] 
 
 
 def get_config(configfile):
