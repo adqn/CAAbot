@@ -95,17 +95,6 @@ class Bot:
         return str(mod).split(r'\\')[-1].split('.')[0] 
 
 
-def get_config(configfile):
-    config = open(configfile).readlines()
-
-    server = config[0].split(' ')[1]
-    port = config[0].split(' ')[2]
-    channel = config[1].split(' ')[1]
-    botnick = config[2].split(' ')[1]
-
-    return {'server': server, 'port': port, 'botnick': botnick, 'channel': channel}
-
-
 if __name__ == "__main__":
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     params = get_config("config.txt")
