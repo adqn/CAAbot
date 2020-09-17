@@ -114,6 +114,13 @@ class Bot:
         
         return resp
 
+    # get calling module's filename
+    def info(self):
+        inspect = __import__('inspect')
+        frm = inspect.stack()[1]
+        mod = inspect.getmodule(frm[0])
+        return str(mod).split(r'\\')[-1].split('.')[0] 
+
 
 if __name__ == "__main__":
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
