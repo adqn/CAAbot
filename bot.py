@@ -54,7 +54,7 @@ class Bot:
         time.sleep(1)
 
     # all commands/server requests parsed and handled from here
-    def get_resp(self):
+   def get_resp(self):
         resp = self.irc.recv(2048).decode("UTF-8")
 
         if resp.find('PING') != -1:
@@ -66,17 +66,25 @@ class Bot:
             self.irc.send(bytes(resp[index:] + "\n", "UTF-8"))
 
             # put this in the initilization
-            self.join_channel(self.channels[0])
+            if config.password:
+                print("Identifying with NICKSERV...")
+                self.send_msg("NICKSERV", "identify " + config.password)
+                time.sleep(3)
+
+            return 1
 
         # change this to be more efficient
+        # also push formatted messages to queue
+        
         if resp.find("PRIVMSG #") != -1:
             prefix = resp.split('PRIVMSG ')[1]
             entity = prefix.split(' ')[0]
             message = resp.split("PRIVMSG", 1)[1].split(":")[1]
-            if message[0] == ".":
-                #print("got command? " + message)
-                self.get_command(entity, message.strip("\n\r"))
-
+        
+        if any(self.message_queue):
+            if len(self.message_queue) >= 20:
+                self.message_queue = self.message_queue[1:]
+        
         return resp
 
     def get_command(self, entity, message):
