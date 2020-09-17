@@ -74,6 +74,13 @@ class Bot:
 
         time.sleep(1)
 
+    def part_channel(self, channel):
+        try:
+            self.irc.send(bytes("PART " + channel + "\n", "UTF-8"))
+            self.channels.remove(channel)
+        except:
+            pass
+
     def get_resp(self):
         resp = self.irc.recv(2048).decode("UTF-8")
 
