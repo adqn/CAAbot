@@ -161,16 +161,54 @@ def init(bot):
 
 
 if __name__ == "__main__":
-    irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    params = get_config("config.txt")
+    running = True
 
-    bot = Bot(irc)
-    bot.running = True
-    bot.channels.append(params['channel'])
-    bot.connect(params['server'], params['port'], params['botnick'])
+    try:
+        c_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        c_socket.bind(('localhost', 8181))
 
-    # bot.get_resp()
+        if c_socket:
+            c_status = "listening"
+            c_socket.listen(1)
+        else:
+            c_status = "disconnected"
+        print("Console status:", c_status)
 
-    while bot.running:
-        print(bot.get_resp())
-        time.sleep(.5)
+        irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        bot = Bot(irc)
+        init(bot)
+
+        for server in config.servers:
+            #bot.connect(server, config.servers[server])
+            pass
+
+        server_thread = threading.Thread(target=ss.server_stuff, args=(bot,))
+        threads['server_thread'] = server_thread
+    except Exception as e:
+        print("Error:", e)
+        running = False
+
+    for t in threads: 
+        threads[t].start()
+    
+    while running:
+        try:
+            conn, client = c_socket.accept()
+            on_console_connect(bot, conn)
+            print("Console user connected")
+
+        except KeyboardInterrupt:
+            bot.running = False
+            running = False
+
+        time.sleep(.05)
+
+    try:
+        c_socket.close()
+        bot.irc.close()
+    except:
+        pass
+
+    for t in threads:
+        threads[t].join()
