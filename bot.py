@@ -122,6 +122,12 @@ class Bot:
         return str(mod).split(r'\\')[-1].split('.')[0] 
 
 
+def on_console_connect(bot, conn):
+    ct = threading.Thread(target=cs.console_stuff, args=(bot, conn,))
+    threads['console_thread'] = ct
+    ct.start()
+
+
 if __name__ == "__main__":
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     params = get_config("config.txt")
