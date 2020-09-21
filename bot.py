@@ -136,7 +136,29 @@ def get_bot_state(bot, message=""):
 
     current_state = json.dumps(current_state)
     return current_state
-    
+
+def init(bot):
+    script_err = []
+
+    for script in config.scripts:
+        try:
+            instance = __import__(script).get_instance(bot)
+            
+            if instance == None:
+                script_err.append(script)
+            else:
+                bot.script_msg_switches[script] = False
+                bot.current_scripts[script] = instance
+                sthread = threading.Thread(target=instance.main_thread)
+                threads[script] = sthread
+
+        except Exception as e:
+            print(e)
+            script_err.append(script)
+
+    if any(script_err):
+        print("Could not load scripts:", ", ".join(script_err))
+
 
 if __name__ == "__main__":
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
