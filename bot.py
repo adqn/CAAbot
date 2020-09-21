@@ -127,6 +127,16 @@ def on_console_connect(bot, conn):
     threads['console_thread'] = ct
     ct.start()
 
+def get_bot_state(bot, message=""):
+    script_vars = {script: bot.current_scripts[script].get_env() for script in bot.current_scripts}
+    current_state = {'channels': bot.channels,
+                     'scripts': list(bot.current_scripts.keys()),
+                     'script_vars': script_vars,
+                     'message': message}
+
+    current_state = json.dumps(current_state)
+    return current_state
+    
 
 if __name__ == "__main__":
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
