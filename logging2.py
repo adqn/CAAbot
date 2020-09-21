@@ -14,3 +14,12 @@ class Logger:
         self.message_buffer = []
         self.bufsize = 50
         self.bufcount = 0
+
+    def get_env(self):
+        return {
+            'running': self.running,
+            'logfile': self.logfile,
+            'logging': self.logging,
+            'bufsize': self.bufsize,
+            'current channels': self.bot.channels.copy()
+        }
