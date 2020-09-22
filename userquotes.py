@@ -41,7 +41,6 @@ class Quotes:
         with open('db/user_quotes.txt') as quotefile:
             quotes = [q for q in quotefile.readlines() if q != "\n"]
 
-        #print(quotes)
         qsize = len(quotes)
         random_q = np.random.randint(0, qsize)
 
