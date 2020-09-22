@@ -39,3 +39,16 @@ class Logger:
             if self.logging:
                 with open("logtest.txt", 'a') as log:
                     log.write(message)
+
+    def main_thread(self):
+        while self.running:
+            if self.bot.script_msg_switches['logging2']:
+                self.log_stuff()
+                self.bot.script_msg_switches['logging2'] = False
+            time.sleep(0.3)
+
+def get_instance(bot=None):
+    logger = Logger(bot)
+    logger.running = True
+
+    return logger                    
