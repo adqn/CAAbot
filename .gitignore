@@ -1,4 +1,4 @@
 *.lock
 /target
 .vscode
-__pycache__
+/__pycache__
