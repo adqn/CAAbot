@@ -7,12 +7,14 @@ import select
 import queue
 import threading
 
-import MySQLdb as db
+#import MySQLdb as db
 
 import importlib
 from importlib import reload
 
 import config
+import console_stuff as cs
+import server_stuff as ss
 
 threads = {}
 
@@ -22,7 +24,7 @@ class Bot:
         self.dbp = None
 
         self.running = False
-        self.channels = []
+        self.channels = config.channels.copy()
         self.current_scripts = {}
 
         self.script_state_update = True        
@@ -44,7 +46,7 @@ class Bot:
 
         try:
             self.irc.connect((server,  port))
-            self.irc.send(bytes("USER " + "test test test :test\n", "UTF-8"))
+            self.irc.send(bytes("USER " + "owo test test :test\n", "UTF-8"))
             self.irc.send(bytes("NICK " + config.botnick + "\n", "UTF-8"))
         except Exception as e:
             print("Could not connect to server.")
@@ -69,10 +71,9 @@ class Bot:
             # print(resp)
 
             if resp.find("End of /NAMES list.") != -1:
-                print("Joined channel " + channel)
                 break
 
-        time.sleep(1)
+        time.sleep(.5)
 
     def part_channel(self, channel):
         try:
@@ -120,8 +121,6 @@ class Bot:
         frm = inspect.stack()[1]
         mod = inspect.getmodule(frm[0])
         return str(mod).split(r'\\')[-1].split('.')[0] 
-<<<<<<< HEAD
-=======
 
 
 def on_console_connect(bot, conn):
@@ -160,8 +159,6 @@ def init(bot):
 
     if any(script_err):
         print("Could not load scripts:", ", ".join(script_err))
->>>>>>> master
-
 
 if __name__ == "__main__":
     running = True
