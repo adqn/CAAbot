@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 #*.lock
 /target
 .vscode
+=======
+.vscode
+/target
+>>>>>>> master

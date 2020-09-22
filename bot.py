@@ -1,17 +1,31 @@
+import json
 import re
 import time
 import socket
 import numpy as np
+import select
+import queue
+import threading
 
+import MySQLdb as db
+
+import importlib
+from importlib import reload
+
+import config
+
+threads = {}
 
 class Bot:
-    def __init__(self, irc, config_params):
+    def __init__(self, irc):
         self.irc = irc
+        self.dbp = None
+
         self.running = False
         self.channels = []
-        self.config = config_params
         self.current_scripts = {}
 
+        self.script_state_update = True        
         self.script_msg_switches = {}
 
         self.new_msg = False
@@ -24,19 +38,26 @@ class Bot:
         self.log_file = False
         self.other_stuff = True
 
-    def connect(self, server, port, botnick):
+    def connect(self, server, port):
+        print("username:", config.botnick)
         print("Connecting to " + server + " on port " + str(port))
 
-        self.irc.connect((server, int(port)))
-        self.irc.send(bytes("USER test test test :test\n", "UTF-8"))
-        self.irc.send(bytes("NICK " + botnick + "\n", "UTF-8"))
+        try:
+            self.irc.connect((server,  port))
+            self.irc.send(bytes("USER " + "test test test :test\n", "UTF-8"))
+            self.irc.send(bytes("NICK " + config.botnick + "\n", "UTF-8"))
+        except Exception as e:
+            print("Could not connect to server.")
 
         print("Connection successful.")
+        self.running = True
         time.sleep(3)
 
-    def send_msg(self, entity, message):
-        msg = "PRIVMSG " + entity + " :" + message + "\n"
-        self.irc.send(bytes(msg, "UTF-8"))
+    def send_msg(self, entity=None, message=None):
+        if entity:
+            message = "PRIVMSG " + entity + " :" + message + "\n"
+
+        self.irc.send(bytes(message + "\n", "UTF-8"))
 
     def join_channel(self, channel):
         self.irc.send(bytes("JOIN " + channel + "\n", "UTF-8"))
@@ -53,7 +74,13 @@ class Bot:
 
         time.sleep(1)
 
-    # all commands/server requests parsed and handled from here
+    def part_channel(self, channel):
+        try:
+            self.irc.send(bytes("PART " + channel + "\n", "UTF-8"))
+            self.channels.remove(channel)
+        except:
+            pass
+
     def get_resp(self):
         resp = self.irc.recv(2048).decode("UTF-8")
 
@@ -93,19 +120,98 @@ class Bot:
         frm = inspect.stack()[1]
         mod = inspect.getmodule(frm[0])
         return str(mod).split(r'\\')[-1].split('.')[0] 
+<<<<<<< HEAD
+=======
+
+
+def on_console_connect(bot, conn):
+    ct = threading.Thread(target=cs.console_stuff, args=(bot, conn,))
+    threads['console_thread'] = ct
+    ct.start()
+
+def get_bot_state(bot, message=""):
+    script_vars = {script: bot.current_scripts[script].get_env() for script in bot.current_scripts}
+    current_state = {'channels': bot.channels,
+                     'scripts': list(bot.current_scripts.keys()),
+                     'script_vars': script_vars,
+                     'message': message}
+
+    current_state = json.dumps(current_state)
+    return current_state
+
+def init(bot):
+    script_err = []
+
+    for script in config.scripts:
+        try:
+            instance = __import__(script).get_instance(bot)
+            
+            if instance == None:
+                script_err.append(script)
+            else:
+                bot.script_msg_switches[script] = False
+                bot.current_scripts[script] = instance
+                sthread = threading.Thread(target=instance.main_thread)
+                threads[script] = sthread
+
+        except Exception as e:
+            print(e)
+            script_err.append(script)
+
+    if any(script_err):
+        print("Could not load scripts:", ", ".join(script_err))
+>>>>>>> master
 
 
 if __name__ == "__main__":
-    irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    params = get_config("config.txt")
+    running = True
 
-    bot = Bot(irc)
-    bot.running = True
-    bot.channels.append(params['channel'])
-    bot.connect(params['server'], params['port'], params['botnick'])
+    try:
+        c_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        c_socket.bind(('localhost', 8181))
 
-    # bot.get_resp()
+        if c_socket:
+            c_status = "listening"
+            c_socket.listen(1)
+        else:
+            c_status = "disconnected"
+        print("Console status:", c_status)
 
-    while bot.running:
-        print(bot.get_resp())
-        time.sleep(.5)
+        irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        bot = Bot(irc)
+        init(bot)
+
+        for server in config.servers:
+            #bot.connect(server, config.servers[server])
+            pass
+
+        server_thread = threading.Thread(target=ss.server_stuff, args=(bot,))
+        threads['server_thread'] = server_thread
+    except Exception as e:
+        print("Error:", e)
+        running = False
+
+    for t in threads: 
+        threads[t].start()
+    
+    while running:
+        try:
+            conn, client = c_socket.accept()
+            on_console_connect(bot, conn)
+            print("Console user connected")
+
+        except KeyboardInterrupt:
+            bot.running = False
+            running = False
+
+        time.sleep(.05)
+
+    try:
+        c_socket.close()
+        bot.irc.close()
+    except:
+        pass
+
+    for t in threads:
+        threads[t].join()
