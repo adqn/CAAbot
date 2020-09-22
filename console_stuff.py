@@ -1,10 +1,11 @@
 import json
 import socket
 
+'''
 commands = {
     'PRIVMSG': 
 }
-
+'''
 
 def console_stuff(bot, conn):
     try:
