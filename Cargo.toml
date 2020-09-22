@@ -1,5 +1,5 @@
 [package]
-name = "CAAbot-rust"
+name = "caabot"
 version = "0.1.0"
 authors = ["adqn"]
 edition = "2018"
