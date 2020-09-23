@@ -83,3 +83,31 @@ class Cutie:
 
         if qt_url:
             return qt_url                
+
+    def get_random_pid(self, qt_query):
+        paginator = None
+        qt_res = list(urllib.request.urlopen(qt_query)).copy()
+
+        for line in qt_res:
+            if line.find(b'pid=') != -1:
+                paginator = line.decode()
+
+        if paginator:
+            pids = re.findall(r'pid=[0-9]+', paginator)
+            pid_max = int(pids[-1].replace("pid=", ""))
+            pid = random.randrange(0, pid_max, 40)
+
+        else:
+            pid = 1
+
+        page = qt_query + "&pid=" + str(pid)
+        return page
+
+    def main_thread(self):
+        while self.running:
+            if self.bot.script_msg_switches['get_qts'] :
+                self.curr_msg = self.bot.message_queue[-1]
+                self.get_command()
+                self.bot.script_msg_switches['get_qts'] = False
+
+            time.sleep(.2)
