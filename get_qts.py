@@ -111,3 +111,10 @@ class Cutie:
                 self.bot.script_msg_switches['get_qts'] = False
 
             time.sleep(.2)
+
+def get_instance(bot=None):
+    if bot:
+        qts = Cutie(bot)
+        qts.running = True
+        return qts
+    return None
