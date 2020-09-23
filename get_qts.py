@@ -1,3 +1,7 @@
+## Disclaimer:
+##      Created by request from the community
+##      I have no idea what safebooru is
+##
 ## todo:
 ## Add more SFW image hosts
 
