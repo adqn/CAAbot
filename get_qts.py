@@ -28,9 +28,10 @@ class Cutie:
 
     def get_command(self):
         msg = None
+        name = "testname"
 
         if self.curr_msg.find("PRIVMSG #") != -1 and self.curr_msg.find(":.qt") != -1:
-            if self.curr_msg.find("PRIVMSG #") != -1 and self.curr_msg.find("SLAPP_") != -1:
+            if self.curr_msg.find("PRIVMSG #") != -1 and self.curr_msg.find(name) != -1:
                 return
             
             calling_channel = self.curr_msg[self.curr_msg.find("PRIVMSG #"):].split(" ")[1]
