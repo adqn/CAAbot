@@ -126,7 +126,7 @@ class Bot:
 def on_console_connect(bot, conn):
     ct = threading.Thread(target=cs.console_stuff, args=(bot, conn,))
     threads['console_thread'] = ct
-    ct.start()
+
 
 def get_bot_state(bot, message=""):
     script_vars = {script: bot.current_scripts[script].get_env() for script in bot.current_scripts}
@@ -180,11 +180,14 @@ if __name__ == "__main__":
         init(bot)
 
         for server in config.servers:
-            #bot.connect(server, config.servers[server])
+            bot.connect(server, config.servers[server])
             pass
 
         server_thread = threading.Thread(target=ss.server_stuff, args=(bot,))
         threads['server_thread'] = server_thread
+
+        conn, client = c_socket.accept()
+        on_console_connect(bot, conn)
     except Exception as e:
         print("Error:", e)
         running = False
@@ -194,9 +197,7 @@ if __name__ == "__main__":
     
     while running:
         try:
-            conn, client = c_socket.accept()
-            on_console_connect(bot, conn)
-            print("Console user connected")
+            pass
 
         except KeyboardInterrupt:
             bot.running = False
