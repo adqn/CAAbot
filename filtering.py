@@ -46,6 +46,46 @@ class Filter:
         except Exception as e:
             print("what the", e)
     
+    # Reverses any modes set on channels/users
+    def auto_set_modes(self):
+        channel = None
+
+        try:
+            user = self.curr_msg.split(" ")[0][1:]
+            username = self.curr_msg.split(" ")[0][1:].split("!")[0]
+            prefix = self.curr_msg.split('MODE ')[1]
+            channel = prefix.split(' ')[0]
+            mode = self.curr_msg.split("PRIVMSG", 1)[1].split(":")[1]
+
+        except:
+            pass
+
+        if channel:
+            if channel in mode_filters:
+                pass                
+
+            #q = "MODE " + channel + " +b"
+            name = "testname"
+
+            if self.curr_msg.find("+o " + testname) != -1:
+                index = self.curr_msg.find("+o " + testname)
+                tmp = self.curr_msg[index:].split(" ")[1]
+                msg = "MODE " + channel + " -o " + tmp
+                self.bot.send_msg(message=msg)
+
+            if self.curr_msg.find(q) != -1:
+                index = self.curr_msg.find(q)
+                tmp = self.curr_msg[index:].split(" ")[3]
+                msg = "MODE " + channel + " -b " + tmp + "!*@*"
+                #self.bot.send_msg(message=msg)
+
+            banlist = {}
+
+            if self.curr_msg.find("JOIN :") != -1:
+                for f in banlist:
+                    if f in user:
+                        msg = "MODE " + channel + " +b" + username
+                        self.bot.send_msg(message=msg)
 
 
     def main_thread(self):
