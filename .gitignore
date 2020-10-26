@@ -1,4 +1,0 @@
-*.lock
-/target
-.vscode
-/__pycache__
