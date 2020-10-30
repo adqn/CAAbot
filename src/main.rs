@@ -19,6 +19,7 @@ struct Threads {
 
 // Currently loaded/unloaded modules
 // Maybe make a Vec
+// Actually, hash map
 struct Modules {
 
 }
@@ -38,7 +39,7 @@ enum Response {
     MODE,
 }
 
-// Stores and handles bot environment
+// Stores and bot environment
 struct Bot {
     running: bool,
     channels: Vec<String>,
