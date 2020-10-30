@@ -4,6 +4,7 @@ use std::io::BufReader;
 use std::net::{TcpStream};
 use std::str::from_utf8;
 
+use std::sync::{Arc, Mutex};
 use std::sync::mpsc::{Sender, Receiver};
 use std::sync::mpsc;
 use std::thread;
@@ -17,8 +18,24 @@ struct Threads {
 }
 
 // Currently loaded/unloaded modules
+// Maybe make a Vec
 struct Modules {
 
+}
+
+enum ResponsePattern {
+    auth,
+    user,
+    channel,
+    mode,
+}
+
+enum Response {
+    PING,
+    PRIVMSG,
+    JOIN,
+    PART,
+    MODE,
 }
 
 // Stores and handles bot environment
@@ -31,7 +48,7 @@ struct Bot {
 }
 
 impl Bot {
-    fn new(channels: Vec<String>) -> Bot {
+    fn new(channels: Vec<String>) -> Self {
         Bot{
             running: true,
             channels,
@@ -95,7 +112,6 @@ fn server_thread(stream: &TcpStream, sender: &Sender<String>) {
     let response: String;
  
     response = match get_resp(&stream){
-        None => String::from("Couldn't receive message from server"),
         Some(resp) => {
             println!("{}", resp);
            
@@ -112,17 +128,22 @@ fn server_thread(stream: &TcpStream, sender: &Sender<String>) {
             }
 
             resp
-        }
+        },
+        None => String::from("Couldn't receive message from server"),
     };
    
     sender.send(response).unwrap();
 }
 
 fn main() {
+    // Set Bot.current_message to latest server response
+    // Probably not necessary to use a queue, but would be instructional
     let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
 
-    let mut bot = Bot::new(vec![String::from("#afafaf")]);
-    let ident = "USER owo test tet test :test";    
+    let bot = Arc::new(Mutex::new(Bot::new(vec![String::from("#afafaf")])));
+    let bot = Arc::clone(&bot);
+
+    let ident = "USER owo test test test :test";    
     let nick = "NICK CAA_rust_test";
 
     let hostip = String::from("irc.rizon.net");
@@ -136,13 +157,15 @@ fn main() {
             send(&s, ident);
             send(&s, nick);           
            
-            // Spawn thread for persistent server connection
+            // Spawn server thread
             let sthread = thread::spawn(move || {
-                if bot.running == true {
+                let mut b = bot.lock().unwrap();
+
+                if b.running == true {
                     loop {
                         server_thread(&s, &tx);
-                        bot.current_message = Some(rx.recv().unwrap());
-                        //println!("from tx: {}", bot.current_message.unwrap());
+                        b.current_message = Some(rx.recv().unwrap());
+                        //println!("from tx: {}", b.lock().unwrap());
                     }
                 }
             });
